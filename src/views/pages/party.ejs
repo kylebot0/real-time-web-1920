@@ -1,0 +1,18 @@
+<%- include ../layouts/_toppage.ejs %>
+    <section class="container profile">
+      <div class="profile-img-container"></div> 
+      <img class='profile-img' src="<%-data.images[0].url%>">
+        
+        <article class="profile-container">
+            <h2>
+                <%-data.display_name%>
+            </h2>
+            <p>Country: <%-data.country%></p>
+            <p>Email: <%-data.email%></p>
+            <p>Followers: <%-data.followers.total%></p>
+            <p>Product: <%-data.product%></p>
+        <a><button>Start party</button></a>
+
+        </article>
+    </section>
+    <%- include ../layouts/_bottompage.ejs %>

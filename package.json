@@ -12,12 +12,17 @@
     "author": "Kyle Bot",
     "license": "MIC",
     "dependencies": {
+        "axios": "^0.19.2",
+        "chalk": "^4.0.0",
         "compression": "^1.7.4",
         "dotenv": "^8.2.0",
         "ejs": "^2.6.1",
         "express": "^4.16.4",
+        "express-session": "^1.17.0",
         "node-fetch": "^2.6.0",
+        "request": "^2.88.2",
         "socket.io": "^2.3.0",
+        "spotify-web-api-node": "^4.0.0",
         "webpack": "^4.42.0"
     },
     "devDependencies": {
