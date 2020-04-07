@@ -52,6 +52,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .profile {
@@ -93,7 +94,7 @@ h2 {
     display:flex;
     flex-direction: row;
     position: fixed;
-    bottom: 30vh;
+    bottom: 50vh;
     width: 65vw;
 }
 
@@ -138,4 +139,16 @@ h2 {
 .profile-msg-img {
     border-radius: 999px;
     max-height: 25px;
+}
+
+.chat {
+    /* align-items: baseline; */
+}
+
+.music-player {
+    margin-top: 10vh;
+    height: 20vh;
+    box-shadow: 4px 14px 101px -5px rgba(0, 0, 0, 0.33);
+    background: #fff;
+    width: 70vw;
 }
