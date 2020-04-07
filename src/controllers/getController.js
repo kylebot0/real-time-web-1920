@@ -28,7 +28,7 @@ function login(req, res) {
 
 async function party(req, res) {
         const result = await spotifyApi.getMe();
-        console.log(result.body);
+        req.session.userData = result
         res.render('./pages/party', {
             title: '',
             data: result.body
@@ -50,9 +50,18 @@ async function getToken(req, res) {
    
 }
 
+async function chat(req, res) {
+  
+  res.render('./pages/chat', {
+      title: '',
+      data: req.session.userData
+  });
+}
+
 module.exports = {
     overview,
     login,
     party,
-    getToken
+    getToken,
+    chat
 }

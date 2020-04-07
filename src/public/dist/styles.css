@@ -1,7 +1,7 @@
 body {
     background: #FAB204;
     font-family: 'Montserrat', sans-serif;
-font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: black;
 }
 
@@ -9,6 +9,7 @@ a {
     text-decoration: none;
     color: black;
 }
+
 h1 {
     color: black;
     font-size: 3em;
@@ -17,51 +18,59 @@ h1 {
 header {
     display: flex;
     justify-content: center;
-    align-items:center;
+    align-items: center;
 }
 
 .container {
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items:center;
+    align-items: center;
 }
+
 button {
     font-family: 'Montserrat', sans-serif;
     color: black;
     background-color: #FAB204;
-    padding:1em 2em 1em 2em;
+    padding: 1em 2em 1em 2em;
     border: none;
     font-weight: 900;
     font-size: 1.2em;
     border: none;
 }
+
 button:hover {
-    cursor:pointer;
+    cursor: pointer;
 }
+
 a:hover {
-    cursor:pointer;
+    cursor: pointer;
 }
+
 main {
-    height:90vh;
+    height: 90vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .profile {
-    box-shadow: 4px 14px 101px -5px rgba(0,0,0,0.33);
+    box-shadow: 4px 14px 101px -5px rgba(0, 0, 0, 0.33);
     background: #fff;
     height: 50vh;
     width: 70vw;
 }
+
 h2 {
     font-size: 2.7em;
 }
+
 .profile-container {
     height: 80%;
     display: grid;
     grid-template-rows: 1fr 10% 10% 10% 10% 10% 15%;
 }
+
 .profile-img {
     margin-right: 10em;
     height: 500px;
@@ -75,4 +84,58 @@ h2 {
     background: #FAB204;
     height: 50%;
     width: 20%;
+}
+
+#messageInput {
+    /* background: #000; */
+    /* padding: 3px; */
+    border: 2px solid #FAB204;
+    display:flex;
+    flex-direction: row;
+    position: fixed;
+    bottom: 30vh;
+    width: 65vw;
+}
+
+#messageInput input {
+    border: 0;
+    padding: 10px;
+    width: 90%;
+    margin-right: .5%;
+}
+
+#messages {
+    overflow: hidden;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#messages li {
+    border-left: 2px solid lightgrey;
+    margin-left: 2.5vw;
+    margin-top: 5px;
+    padding: 5px 10px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    width:100%;
+}
+
+#messages li.self {
+    color: white;
+    background: purple;
+}
+#messages p:first-of-type {
+    margin: 0;
+    margin-left: 0.5em;
+}
+#messages p:last-of-type {
+    margin: 0;
+    margin-left: 2em;
+}
+.profile-msg-img {
+    border-radius: 999px;
+    max-height: 25px;
 }
