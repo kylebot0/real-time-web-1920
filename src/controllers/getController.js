@@ -42,8 +42,8 @@ async function getToken(req, res) {
     const { access_token, refresh_token } = data.body;
     spotifyApi.setAccessToken(access_token);
     spotifyApi.setRefreshToken(refresh_token);
-
-    res.redirect('http://localhost:3000/party');
+    res.redirect('https://rtw-1920.herokuapp.com/party/');
+    // res.redirect('http://localhost:3000/party');
   } catch(err) {
     res.redirect('/#/error/invalid token');
   }
