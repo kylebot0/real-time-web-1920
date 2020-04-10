@@ -56,14 +56,9 @@ async function getToken(req, res) {
 }
 
 function getRandomSearch() {
-  // A list of all characters that can be chosen.
   const characters = 'abcdefghijklmnopqrstuvwxyz';
-  
-  // Gets a random character from the characters string.
   const randomCharacter = characters.charAt(Math.floor(Math.random() * characters.length));
   let randomSearch = '';
-
-  // Places the wildcard character at the beginning, or both beginning and end, randomly.
   switch (Math.round(Math.random())) {
     case 0:
       randomSearch = randomCharacter + '%';
@@ -85,7 +80,7 @@ async function chat(req, res) {
   })
   .catch(err => console.log(err))
   req.session.trackList = results.body.tracks.items
-  console.log(results.body.tracks.items)
+  // console.log(results.body.tracks.items)
   res.render('./pages/chat', {
       title: '',
       data: req.session.userData

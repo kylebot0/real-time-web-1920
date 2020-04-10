@@ -3,16 +3,24 @@
 
 <%- include ../partials/head.ejs %>
 
-    <body>
-        <%- include ../partials/header.ejs %>
-            <main class="chat">
-    <section class="container profile">
-        <ul id="messages"></ul>
-        <form id="messageInput" action="" >
-            <input id="m" autofocus autocomplete="off" /><button>Send</button>
-          </form>
-    </section>
-    <section class="container music-player">
+<body class="chat">
+    <header class="container header">
+        <h2>Connected users:</h2>
+        <ul></ul>
+    </header>
+    <main>
+        <section class="container profile">
+            <ul id="messages"></ul>
+            <form id="messageInput" action="">
+                <input id="m" autofocus autocomplete="off" /><button>Send</button>
+            </form>
+        </section>
+        <section class="container music-player">
 
-    </section>
-    <%- include ../layouts/_bottompage.ejs %>
+        </section>
+    </main>
+    <%- include ../partials/script-tags.ejs %>
+    <script src="/dist/chat.js"></script>
+</body>
+
+</html>

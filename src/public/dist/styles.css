@@ -90,7 +90,6 @@ h2 {
 #messageInput {
     /* background: #000; */
     /* padding: 3px; */
-    border: 2px solid #FAB204;
     display:flex;
     flex-direction: row;
     position: fixed;
@@ -99,10 +98,8 @@ h2 {
 }
 
 #messageInput input {
-    border: 0;
-    padding: 10px;
+    border: 2px solid #FAB204;
     width: 90%;
-    margin-right: .5%;
 }
 
 #messages {
@@ -142,7 +139,8 @@ h2 {
 }
 
 .chat {
-    /* align-items: baseline; */
+    display: grid;
+    grid-template-columns: 25vw 75vw;
 }
 
 .music-player {
@@ -151,4 +149,43 @@ h2 {
     box-shadow: 4px 14px 101px -5px rgba(0, 0, 0, 0.33);
     background: #fff;
     width: 70vw;
+}
+
+.server-msg {
+    font-style: italic;
+    color: lightgrey;
+    margin: 0 !important;
+}
+
+.header {
+    margin: 5vh 0 0 5vw;
+    height: 20vh;
+    box-shadow: 4px 14px 101px -5px rgba(0, 0, 0, 0.33);
+    background: #fff;
+    width: 20vw;
+    display: grid;
+    grid-template-rows: 10% 1fr;
+}
+
+.header ul {
+    overflow: hidden;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.header li {
+    margin-top: 5px;
+    padding: 5px 10px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    width:100%;
+}
+.header li p {
+ margin: 0;
+ margin-left: 1em;
+}
+.header h2 {
+    font-size: 1em;
 }

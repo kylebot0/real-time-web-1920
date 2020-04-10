@@ -24,13 +24,28 @@ app.set('view engine', 'ejs')
 
 io.use(sharedsession(session));
 
+
+let commands = []
+let users = []
+
 io.on('connection', function (socket) {
+  let userName = socket.handshake.session.userData.body.display_name
+  let user = socket.handshake.session.userData.body
+  users.push(user)
+  // console.log(user)
   console.log('a user connected');
+  socket.broadcast.emit('server message', `User ${userName} connected.`);
+  io.emit('user list', users)
+
   socket.on('disconnect', function () {
     console.log(chalk.red('user disconnected'));
+    users = users.filter(item => item !== user)
+    io.emit('user list', users)
+    console.log(users)
+    io.emit('server message', `User ${userName} disconnected.`);
   });
   socket.on('chat message', function (msg) {
-    if(msg.length == 0){
+    if (msg.length == 0) {
       return
     }
     console.log(chalk.blue(msg))
