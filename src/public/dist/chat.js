@@ -5,11 +5,11 @@ const messageContainer = document.querySelector('#messages')
 
 if(form){
     console.log(form)
-    $('form').submit(function(e){
+    form.addEventListener('submit', function(e) {
         console.log(e)
-        e.preventDefault();
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
+          e.preventDefault();
+        socket.emit('chat message', document.getElementById('m').value)
+        document.getElementById('m').value = ''
         return false;
       });
       socket.on('chat message', function(data, msg){
