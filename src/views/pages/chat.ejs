@@ -10,16 +10,29 @@
     </header>
     <main>
         <section class="container profile">
+            <p class="hidden" id="accessToken" value='<%- token %>'></p>
             <ul id="messages"></ul>
             <form id="messageInput" action="">
                 <input id="m" autofocus autocomplete="off" /><button>Send</button>
             </form>
         </section>
         <section class="container music-player">
+            <div class='music-player-container'>
+                <div class="controls-container">
+                    <div class="controls">
+                        <div></div>
+                        <div class="btn"><button id="previous"></button></div>
+                        <div class="rnd btn"><button id="play" class="paused"></button></div>
+                        <div class="btn"><button id="next"></button></div>
 
+                    </div>
+                    <div class="controls">
+                    </div>
+                </div>
         </section>
     </main>
     <%- include ../partials/script-tags.ejs %>
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
     <script src="/dist/chat.js"></script>
 </body>
 

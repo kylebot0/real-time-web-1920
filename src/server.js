@@ -29,28 +29,28 @@ let commands = []
 let users = []
 
 io.on('connection', function (socket) {
-  let userName = socket.handshake.session.userData.body.display_name
-  let user = socket.handshake.session.userData.body
-  users.push(user)
-  // console.log(user)
-  console.log('a user connected');
-  socket.broadcast.emit('server message', `User ${userName} connected.`);
-  io.emit('user list', users)
-
-  socket.on('disconnect', function () {
-    console.log(chalk.red('user disconnected'));
-    users = users.filter(item => item !== user)
+  
+    let user = socket.handshake.session.userData.body
+    users.push(user)
+    // console.log(user)
+    console.log('a user connected');
+    io.emit('server message', `User ${socket.handshake.session.userData.body.display_name} connected.`);
     io.emit('user list', users)
-    console.log(users)
-    io.emit('server message', `User ${userName} disconnected.`);
-  });
-  socket.on('chat message', function (msg) {
-    if (msg.length == 0) {
-      return
-    }
-    console.log(chalk.blue(msg))
-    io.emit('chat message', socket.handshake.session.userData.body, msg);
-  });
+  
+    socket.on('disconnect', function () {
+      console.log(chalk.red('user disconnected'));
+      users = users.filter(item => item !== user)
+      io.emit('user list', users)
+      console.log(users)
+      io.emit('server message', `User ${socket.handshake.session.userData.body.display_name} disconnected.`);
+    });
+    socket.on('chat message', function (msg) {
+      if (msg.length == 0) {
+        return
+      }
+      console.log(chalk.blue(msg))
+      io.emit('chat message', socket.handshake.session.userData.body, msg);
+    });
 });
 
 
