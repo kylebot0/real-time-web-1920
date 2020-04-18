@@ -50,7 +50,9 @@ This project makes use of the following packages and technologies:
   * Express
 * Socket.io
 * Spotify SDK
-
+## Data lifecycle Diagram
+![Detail page](https://github.com/kylebot0/real-time-web-1920/blob/master/gh-images/lifecycle.png)
+> Lifecycle
 ## API 🐒
 The data used throughout the application is from the Spotify API ```https://api.spotify.com/v1```.
 It is a API that uses oAuth to connect the user. After you've succesfully connected you can search for basically everything within Spotify. 
