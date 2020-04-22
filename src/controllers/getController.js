@@ -10,7 +10,7 @@ const spotifyApi = new SpotifyWebApi({
 });
 const scopes = ["streaming", 'user-modify-playback-state', 'user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private']
 
-const development = true
+const development = process.env.development
 
 async function overview(req, res) {
   res.render('./pages/overview', {
@@ -30,7 +30,6 @@ async function party(req, res) {
   }
   const result = await spotifyApi.getMe();
   req.session.userData = result
-
   res.render('./pages/party', {
     title: '',
     data: result.body
@@ -78,21 +77,25 @@ function getRandomSearch() {
   return randomSearch;
 }
 
-
-async function chat(req, res) {
-  if (req.session.isLogedIn == null) {
-    res.redirect('/login')
-  }
-  const randomOffset = Math.floor(Math.random() * 10000);
+async function searchApi(req,res){
+  const randomOffset = Math.floor(Math.random() * 100);
   let results = await spotifyApi.searchTracks(getRandomSearch(), {
-      limit: 50,
-      offset: 50
+      limit: 20,
+      offset: randomOffset
     })
     .then(result => {
       return result
     })
     .catch(err => console.log(err))
-  req.session.trackList = results.body.tracks.items
+    const uriList = results.body.tracks.items.map(function(o) { return o.uri; });
+    res.json(uriList)
+}
+
+async function chat(req, res) {
+  if (req.session.isLogedIn == null) {
+    res.redirect('/login')
+  }
+ 
   let token = spotifyApi._credentials.accessToken
   res.render('./pages/chat', {
     title: '',
@@ -106,5 +109,6 @@ module.exports = {
   login,
   party,
   getToken,
-  chat
+  chat,
+  searchApi
 }

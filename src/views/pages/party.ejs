@@ -1,8 +1,11 @@
 <%- include ../layouts/_toppage.ejs %>
     <section class="container profile">
       <div class="profile-img-container"></div> 
-      <img class='profile-img' src="<%-data.images[0].url%>">
-        
+    <% if(data.images.length !== 0){ %>
+        <img class='profile-img' src="<%- data.images[0].url%>">
+    <%} else {%>
+        <img class='profile-img' src="./img/profile.png">
+    <% }%>
         <article class="profile-container">
             <h2>
                 <%-data.display_name%>

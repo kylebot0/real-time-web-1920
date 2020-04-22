@@ -6,7 +6,8 @@ const get = {
     login,
     party,
     getToken,
-    chat
+    chat,
+    searchApi
 } = require('../controllers/getController')
 
 const post = {
@@ -17,6 +18,7 @@ router.get('/', get.overview)
 .get('/spotify', get.getToken)
 .get('/party', get.party)
 .get('/chat', get.chat)
+.get('/searchapi', get.searchApi)
 
 
 // Make sure to export the router so it becomes available on imports

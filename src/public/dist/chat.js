@@ -43,7 +43,20 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   // =================States======================================
   // =============================================================
   player.addListener('player_state_changed', state => {
-    console.log(state);
+    socket.emit('state change', state)
+    socket.on('state change', function(newState){
+        console.log('Linked')
+        state = newState
+      replaceSong(state)
+      return state
+    })
+  });
+
+
+  // =============================================================
+  // =================Custom Playbacks============================
+  // =============================================================
+  function replaceSong(state){
     const musicPlayer = document.querySelector('.music-player-container')
     let container = document.querySelector('.music-player-container .album')
     let container2 = document.querySelector('.artist-container')
@@ -63,13 +76,14 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     musicPlayer.insertAdjacentHTML('afterbegin', markup)
 
     let play = document.querySelector('#play')
+    let next = document.querySelector('#next')
+    let previous = document.querySelector('#previous')
+    
   play.addEventListener('click', pause)
-  });
+  next.addEventListener('click', nextTrack)
+  previous.addEventListener('click', previousTrack)
+  }
 
-
-  // =============================================================
-  // =================Custom Playbacks============================
-  // =============================================================
   function pause() {
     let play = document.querySelector('#play')
     if(play.classList.contains('paused')){
@@ -77,27 +91,50 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     } else {
       play.classList.add('paused')
     }
-
   player.togglePlay().then(() => {
     console.log('Paused!');
   });
   }
 
+  function nextTrack() {
+  player.nextTrack().then(() => {
+    console.log('Paused!');
+  });
+  }
 
+  function previousTrack() {
+  player.previousTrack().then(() => {
+    console.log('Paused!');
+  });
+  }
+
+ 
 
   // =============================================================
   // =================Ready============================
   // =============================================================
-  player.addListener('ready', ({
+  player.addListener('ready', async ({
     device_id
   }) => {
     player.setVolume(0.1).then(() => {
       console.log('Volume updated!');
     });
+    socket.emit('already playing', 1)
+    socket.on('play', function(){
+      pause()
+    })
+    socket.on('already playing', async function(){
+      let searchUrl = window.location.origin +'/searchApi'
+      let que = await getUris(searchUrl)
+      console.log(que)
+      play(device_id, token, que[0]);
+      que.forEach(item => {
+        addToQue(device_id, token, item)
+      })
+    })
     
- 
-    let uri = "spotify:track:18czZN7uruOjftj71Kt8oj"
-    play(device_id, token, uri);
+    // pause()
+    
   });
 
   // Not Ready
@@ -112,6 +149,20 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
 };
 
+function addToQue(device_id, token, uri) {
+  $.ajax({
+    url: "https://api.spotify.com/v1/me/player/queue?device_id=" + device_id + "&uri=" + uri,
+    type: "POST",
+    async: false,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+    },
+    success: function (data) {
+      console.log('Added to queue')
+    }
+  });
+}
+
 function play(device_id, token, uri) {
   $.ajax({
     url: "https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
@@ -121,11 +172,22 @@ function play(device_id, token, uri) {
       xhr.setRequestHeader('Authorization', 'Bearer ' + token);
     },
     success: function (data) {
-      console.log(data)
+      console.log('Playing')
     }
   });
 }
 
+function getUris(url) {
+  // let list = []
+  return $.ajax({
+    url: url,
+    type: "GET",
+    success: function (data) {
+      return data
+    }
+  });
+  // return list;
+}
 
 if (form) {
   form.addEventListener('submit', function (e) {
@@ -136,8 +198,14 @@ if (form) {
     return false;
   });
   socket.on('chat message', function (data, msg) {
-    let markup = `<li><img class="profile-msg-img" src="${data.images[0].url}"><p>${data.display_name}:</p><p>${msg}</p></li>`
+    if(data.images.length == 0){
+    let markup = `<li><img class="profile-msg-img" src="./img/profile.png"><p>${data.display_name}:</p><p>${msg}</p></li>`
     messageContainer.insertAdjacentHTML('beforeend', markup)
+    } else {
+      let markup = `<li><img class="profile-msg-img" src="${data.images[0].url}"><p>${data.display_name}:</p><p>${msg}</p></li>`
+      messageContainer.insertAdjacentHTML('beforeend', markup)
+    }
+    
   });
   socket.on('server message', function (msg) {
     let markup = `<li><p class="server-msg">${msg}</p></li>`
@@ -149,8 +217,14 @@ if (form) {
     li.forEach(item => item.remove())
     data.forEach(function (item) {
       let headerUl = document.querySelector('header ul')
-      let markup = `<li><img class="profile-msg-img" src="${item.images[0].url}"><p>${item.display_name}</p></li>`
-      headerUl.insertAdjacentHTML('beforeend', markup)
+      if(item.images.length == 0){
+        let markup = `<li><img class="profile-msg-img" src="./img/profile.png"><p>${item.display_name}</p></li>`
+        headerUl.insertAdjacentHTML('beforeend', markup)
+      } else {
+        let markup = `<li><img class="profile-msg-img" src="${item.images[0].url}"><p>${item.display_name}</p></li>`
+        headerUl.insertAdjacentHTML('beforeend', markup)
+      }
+      
     })
 
   });
