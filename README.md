@@ -15,9 +15,10 @@ This project uses the Spotify API to retrieve songs and user data, to which the 
   - [Licence 🔓](#licence-%f0%9f%94%93)
 
 ## Live demo
-[Direct link](https://pwa-1920-kyle-bot.herokuapp.com/)
+[Direct link](https://rtw-1920.herokuapp.com/)
 ```
-https://pwa-1920-kyle-bot.herokuapp.com/
+https://rtw-1920.herokuapp.com/
+(Doesn't work yet
 ```
 
 ## To Do and features 📌
@@ -50,7 +51,7 @@ This project makes use of the following packages and technologies:
   * Express
 * Socket.io
 * Spotify SDK
-## Data lifecycle Diagram
+## Data lifecycle Diagram (WIP)
 ![Detail page](https://github.com/kylebot0/real-time-web-1920/blob/master/gh-images/lifecycle.png)
 > Lifecycle
 ## API 🐒
