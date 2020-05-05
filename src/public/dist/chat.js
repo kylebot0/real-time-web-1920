@@ -1,12 +1,61 @@
 const socket = io()
 const form = document.querySelector('form')
 const messageContainer = document.querySelector('#messages')
+const accessToken = (document.getElementById('accessToken').getAttribute('value'));
+const token = `${accessToken}`
+let play = document.querySelector('#play')
+let next = document.querySelector('#next')
+let previous = document.querySelector('#previous')
+    
+  play.addEventListener('click', pause)
+  next.addEventListener('click', nextTrack)
+  previous.addEventListener('click', previousTrack)
 
+  socket.on('currently playing', function (data) {
+    console.log(data)
+      const musicPlayer = document.querySelector('.music-player-container')
+      let container = document.querySelector('.music-player-container .album')
+      let container2 = document.querySelector('.artist-container')
+      if (container) {
+        container.remove()
+        container2.remove()
+      }
+      let img = data.item.album.images[0].url
+      let trackName = data.item.name
+      let artist = data.item.album.artists[0].name
+  
+      let markup = `
+    <img class="album" src="${img}"><div class="artist-container"><h2>${trackName}</h2><p>${artist}</p></div>
+    
+  
+    `
+      musicPlayer.insertAdjacentHTML('afterbegin', markup)
+    
+  })
 
+  function pause() {
+    let play = document.querySelector('#play')
+    if(play.classList.contains('paused')){
+      play.classList.remove('paused')
+    } else {
+      play.classList.add('paused')
+    }
+  socket.emit('pause', token)
+  }
+
+  function nextTrack() {
+  player.nextTrack().then(() => {
+    console.log('Paused!');
+  });
+  }
+
+  function previousTrack() {
+  player.previousTrack().then(() => {
+    console.log('Paused!');
+  });
+  }
 
 window.onSpotifyWebPlaybackSDKReady = () => {
-  const accessToken = (document.getElementById('accessToken').getAttribute('value'));
-  const token = `${accessToken}`
   const player = new Spotify.Player({
     name: 'Listening Party',
     getOAuthToken: cb => {
@@ -39,99 +88,20 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     console.error(message);
   });
 
- // =============================================================
-  // =================States======================================
-  // =============================================================
   player.addListener('player_state_changed', state => {
-    socket.emit('state change', state)
-    socket.on('state change', function(newState){
-        console.log('Linked')
-        state = newState
-      replaceSong(state)
-      return state
-    })
   });
 
-
-  // =============================================================
-  // =================Custom Playbacks============================
-  // =============================================================
-  function replaceSong(state){
-    const musicPlayer = document.querySelector('.music-player-container')
-    let container = document.querySelector('.music-player-container .album')
-    let container2 = document.querySelector('.artist-container')
-    if (container) {
-      container.remove()
-      container2.remove()
-    }
-    let img = state.track_window.current_track.album.images[0].url
-    let trackName = state.track_window.current_track.name
-    let artist = state.track_window.current_track.artists[0].name
-
-    let markup = `
-  <img class="album" src="${img}"><div class="artist-container"><h2>${trackName}</h2><p>${artist}</p></div>
-  
-
-  `
-    musicPlayer.insertAdjacentHTML('afterbegin', markup)
-
-    let play = document.querySelector('#play')
-    let next = document.querySelector('#next')
-    let previous = document.querySelector('#previous')
-    
-  play.addEventListener('click', pause)
-  next.addEventListener('click', nextTrack)
-  previous.addEventListener('click', previousTrack)
-  }
-
-  function pause() {
-    let play = document.querySelector('#play')
-    if(play.classList.contains('paused')){
-      play.classList.remove('paused')
-    } else {
-      play.classList.add('paused')
-    }
-  player.togglePlay().then(() => {
-    console.log('Paused!');
-  });
-  }
-
-  function nextTrack() {
-  player.nextTrack().then(() => {
-    console.log('Paused!');
-  });
-  }
-
-  function previousTrack() {
-  player.previousTrack().then(() => {
-    console.log('Paused!');
-  });
-  }
-
- 
-
-  // =============================================================
-  // =================Ready============================
-  // =============================================================
   player.addListener('ready', async ({
     device_id
   }) => {
     player.setVolume(0.1).then(() => {
       console.log('Volume updated!');
     });
-    socket.emit('already playing', 1)
-    socket.on('play', function(){
-      pause()
-    })
-    socket.on('already playing', async function(){
-      let searchUrl = window.location.origin +'/searchApi'
-      let que = await getUris(searchUrl)
-      console.log(que)
-      play(device_id, token, que[0]);
-      que.forEach(item => {
-        addToQue(device_id, token, item)
-      })
-    })
+    let searchUrl = window.location.origin +'/searchApi'
+    let que = await getUris(searchUrl)
+    socket.emit('getSongs', {que: que, token: token})
+    socket.emit('getPosition', {que: que, token: token})
+    socket.emit('setSong',{token: token, device_id: device_id})
     
     // pause()
     
@@ -148,34 +118,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
   player.connect();
 
 };
-
-function addToQue(device_id, token, uri) {
-  $.ajax({
-    url: "https://api.spotify.com/v1/me/player/queue?device_id=" + device_id + "&uri=" + uri,
-    type: "POST",
-    async: false,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-    },
-    success: function (data) {
-      console.log('Added to queue')
-    }
-  });
-}
-
-function play(device_id, token, uri) {
-  $.ajax({
-    url: "https://api.spotify.com/v1/me/player/play?device_id=" + device_id,
-    type: "PUT",
-    data: `{"uris": ["${uri}"]}`,
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-    },
-    success: function (data) {
-      console.log('Playing')
-    }
-  });
-}
 
 function getUris(url) {
   // let list = []

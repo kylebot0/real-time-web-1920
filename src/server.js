@@ -4,6 +4,7 @@ const session = require('express-session')({
   resave: true,
   saveUninitialized: true
 })
+const queryString = require('query-string');
 const sharedsession = require('express-socket.io-session');
 const chalk = require('chalk');
 const routing = require('./routes/routes')
@@ -13,7 +14,7 @@ const port = process.env.PORT || 3000
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http)
-
+const fetch = require('node-fetch');
 
 app.set('view engine', 'ejs')
   .set('views', 'src/views')
@@ -27,21 +28,18 @@ io.use(sharedsession(session));
 
 let commands = []
 let users = []
-let playerTrackName = ''
-let counter = 0;
-let playerState = ''
+let queRoom = []
+let position = 0
 
-io.on('connection', function (socket) {
-  
+  io.on('connection', function (socket) {
+
     let user = socket.handshake.session.userData.body
     users.push(user)
-    // console.log(user)
     console.log('a user connected');
     io.emit('server message', `User ${socket.handshake.session.userData.body.display_name} connected.`);
     io.emit('user list', users)
-  
+
     socket.on('disconnect', function () {
-      counter = counter - 1
       console.log(chalk.red('user disconnected'));
       users = users.filter(item => item !== user)
       io.emit('user list', users)
@@ -49,40 +47,116 @@ io.on('connection', function (socket) {
       io.emit('server message', `User ${socket.handshake.session.userData.body.display_name} disconnected.`);
     });
 
-    socket.on('chat message', function (msg) {
-      if (msg.length == 0) {
+    socket.on('getSongs', async function (obj) {
+      if (queRoom.length == 0) {
+        queRoom = obj.que
+      } else {
         return
       }
-      console.log(chalk.blue(msg))
-      io.emit('chat message', socket.handshake.session.userData.body, msg);
+    })
+
+    io.on('getPosition', async function (obj) {
+      if(queRoom.length !== 0){
+        fetch(
+          `https://api.spotify.com/v1/me/player/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${obj.token}`,
+            },
+          }
+        )
+        .then(async (response) => {
+          const tracksData = await response.json();
+          position = tracksData.progress_ms
+          return
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      }
+      else {
+        return
+      }
+    })
+
+    socket.on('setSong', async function (obj) {
+      await putSong();
+      setTimeout(async () => {
+        await fetchSong();
+      }, 150)
+      queRoom.forEach(async (item, i)=>{
+          await addToQueue(item);
+      })
+      async function putSong() {
+        await fetch(`https://api.spotify.com/v1/me/player/play`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${obj.token}`,
+          },
+          body: JSON.stringify({
+            uris: [queRoom[0]],
+            position_ms: position,
+          }),
+        }).then(response => {
+          return
+        })
+      }
+      async function fetchSong() {
+        fetch(
+            `https://api.spotify.com/v1/me/player/`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${obj.token}`,
+              },
+            }
+          )
+          .then(async (response) => {
+            const tracksData = await response.json();
+            socket.emit("currently playing", tracksData);
+            return
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      async function addToQueue(item) {
+        console.log(item)
+        let uri = item
+        let query = queryString.stringify({uri})
+        await fetch(`https://api.spotify.com/v1/me/player/queue?${query}`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${obj.token}`,
+          },
+        }).then(response => {
+          return
+        })
+      }
     });
 
-    socket.on('already playing', function(count){
-      if(counter >= 1){
-        console.log(chalk.red(counter))
-        io.emit('state change', playerState)
-        io.emit('play')
-      } else{
-        counter = counter + count
-      io.emit('already playing')
-      }
-    })
+socket.on('pause', function (token) {
+  fetch(`https://api.spotify.com/v1/me/player/pause`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(async (response) => {
+    console.log(response)
+  });
+})
+socket.on('chat message', function (msg) {
+if (msg.length == 0) {
+  return
+}
+console.log(chalk.blue(msg))
+io.emit('chat message', socket.handshake.session.userData.body, msg);
+});
 
-    socket.on('state change', function(state) {
-      // console.log(playerState)
-      if(playerTrackName.length >= 1){
-        if(playerTrackName != state.track_window.current_track.name){
-          console.log('state change')
-          playerState = state
-          io.emit('state change', state)
-        } else {
-          return
-        }
-      } else {
-      playerTrackName = state.track_window.current_track.name
-      }
-     
-    })
+
 });
 
 

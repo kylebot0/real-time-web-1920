@@ -8,7 +8,7 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.SPOTIFY_clientSecret,
   redirectUri: process.env.SPOTIFY_redirect
 });
-const scopes = ["streaming", 'user-modify-playback-state', 'user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private']
+const scopes = ["streaming", 'user-read-playback-state','user-modify-playback-state', 'user-read-private', 'user-read-email', 'playlist-modify-public', 'playlist-modify-private']
 
 const development = process.env.development
 
