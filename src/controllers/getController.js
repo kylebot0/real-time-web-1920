@@ -48,7 +48,7 @@ async function getToken(req, res) {
     } = data.body;
     spotifyApi.setAccessToken(access_token);
     spotifyApi.setRefreshToken(refresh_token);
-    if (development) {
+    if (development == true) {
       req.session.isLogedIn = true
       res.redirect('http://localhost:3000/party');
     } else {
