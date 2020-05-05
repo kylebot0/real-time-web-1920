@@ -11,6 +11,10 @@ let previous = document.querySelector('#previous')
   next.addEventListener('click', nextTrack)
   previous.addEventListener('click', previousTrack)
 
+  setInterval(() => {
+      socket.emit('currently playing', token)
+  }, 5000)
+
   socket.on('currently playing', function (data) {
     console.log(data)
       const musicPlayer = document.querySelector('.music-player-container')
@@ -36,11 +40,15 @@ let previous = document.querySelector('#previous')
   function pause() {
     let play = document.querySelector('#play')
     if(play.classList.contains('paused')){
+      socket.emit('pause', token)
+
       play.classList.remove('paused')
     } else {
+      socket.emit('resume', token)
+
       play.classList.add('paused')
     }
-  socket.emit('pause', token)
+ 
   }
 
   function nextTrack() {
