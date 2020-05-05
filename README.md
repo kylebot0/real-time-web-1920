@@ -7,12 +7,26 @@ This project uses the Spotify API to retrieve songs and user data, to which the 
 
 ## Table of Contents 🗃
 
-  - [Installing 🔍](#installing-%f0%9f%94%8d)
-  - [Keep up to date](#keep-up-to-date)
-  - [Contributing](#contributing)
-  - [Sources 📚](#sources-%f0%9f%93%9a)
-    - [Credits](#credits)
-  - [Licence 🔓](#licence-%f0%9f%94%93)
+ - [Spotify Listening Party](#spotify-listening-party)
+  * [Table of Contents 🗃](#table-of-contents---)
+  * [Live demo](#live-demo)
+  * [To Do and features 📌](#to-do-and-features---)
+  * [Description 📝](#description---)
+  * [Socket events](#socket-events)
+    + [Server](#server)
+    + [Client](#client)
+  * [Packages and Technologies](#packages-and-technologies)
+    + [Browser support](#browser-support)
+  * [Data lifecycle Diagram (WIP)](#data-lifecycle-diagram--wip-)
+    + [Data](#data)
+    + [Custom API](#custom-api)
+  * [API 🐒](#api---)
+  * [Installing 🔍](#installing---)
+  * [Keep up to date](#keep-up-to-date)
+  * [Contributing](#contributing)
+  * [Sources 📚](#sources---)
+    + [Credits](#credits)
+  * [Licence 🔓](#licence---)
 
 ## Live demo
 [Direct link](https://rtw-1920.herokuapp.com/)
@@ -30,6 +44,7 @@ Things to do in this project:
 
 Done:
 
+- [x] Add custom API to retrieve random songs
 - [x] Add SDK
 - [x] Add Socket.io
 - [x] Add working chat
@@ -38,6 +53,7 @@ Done:
 - [x] Make oAuth working
 - [x] Sync playing music
 - [x] Adds random songs to the queue
+
 
 
 
@@ -92,8 +108,15 @@ This project makes use of the following packages and technologies:
   * Safari
 
 ## Data lifecycle Diagram (WIP)
-![Detail page](https://github.com/kylebot0/real-time-web-1920/blob/master/gh-images/lifecycle.png)
+![Detail page](https://github.com/kylebot0/real-time-web-1920/blob/master/gh-images/dld.png)
 > Lifecycle
+
+### Data 
+The data that's being saved on the server has to be the data that's the single source of truth. This way the client can't manipulate the data. The server also determines what's being added to the queue, and keeps the connection between Spotify and the client. 
+
+### Custom API
+To get the random songs, i have setup a custom api to retrieve them. It returns a json object with 20 objects. The user must be authenticated in order to use it. 
+
 ## API 🐒
 The data used throughout the application is from the Spotify API ```https://api.spotify.com/v1```.
 It is a API that uses oAuth to connect the user. After you've succesfully connected you can search for basically everything within Spotify. 
